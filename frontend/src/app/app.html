@@ -1,0 +1,100 @@
+<div class="min-h-screen flex flex-col font-sans">
+  <!-- Navigation Header Block -->
+  <nav class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between h-16 items-center">
+        <!-- Brand & Main Navigation -->
+        <div class="flex items-center gap-8">
+          <a routerLink="/" class="flex-shrink-0 flex items-center gap-2 group">
+            <div class="w-8 h-8 p-6 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold group-hover:bg-blue-700 transition-colors">
+              OLX
+            </div>
+            <span class="text-xl font-bold text-slate-800 tracking-tight">Нерухомість</span>
+          </a>
+          <div class="hidden md:flex space-x-1">
+            <a routerLink="/ads" routerLinkActive="bg-slate-100 text-blue-600" [routerLinkActiveOptions]="{exact: true}" class="text-slate-600 hover:bg-slate-50 hover:text-slate-900 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+              Дивитись пропозиції
+            </a>
+            @if (isSeller) {
+              <a routerLink="/ads/create" routerLinkActive="bg-slate-100 text-blue-600" class="text-slate-600 hover:bg-slate-50 hover:text-slate-900 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                Нове оголошення
+              </a>
+            }
+          </div>
+        </div>
+
+        <!-- User Actions & Secondary Navigation -->
+        <div class="hidden md:flex items-center space-x-2">
+
+          @if (isBuyer) {
+            <!-- Buyer Tools -->
+            <div class="flex items-center space-x-1 mr-4">
+              <a routerLink="/subscribe" routerLinkActive="text-blue-600 bg-blue-50" class="text-slate-500 hover:text-slate-700 px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                Підписки
+              </a>
+              <a routerLink="/notifications" routerLinkActive="text-blue-600 bg-blue-50" class="relative text-slate-500 hover:text-slate-700 p-2 rounded-full transition-colors">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                </svg>
+                <!-- Notification Badge Indicator -->
+                <span class="absolute top-1.5 right-1.5 block h-2 w-2 rounded-full bg-red-500 ring-2 ring-white"></span>
+              </a>
+            </div>
+            <div class="h-6 w-px bg-slate-200 mx-2"></div>
+          }
+
+          <!-- Auth Links & Profile -->
+          @if (!isLoggedIn) {
+            <a routerLink="/login" class="text-slate-600 hover:text-slate-900 text-sm font-medium px-4 py-2 rounded-lg transition-colors">
+              Увійти
+            </a>
+            <a routerLink="/register" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium shadow-sm transition-colors">
+              Зареєструватись
+            </a>
+          } @else {
+          <div class="flex items-center gap-4">
+            <!-- User Profile Group -->
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 border border-slate-200">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                </svg>
+              </div>
+              <span class="text-sm font-medium text-slate-700">{{ userName }}</span>
+            </div>
+            <button (click)="logout()" class="text-slate-500 hover:text-red-600 text-sm font-medium px-3 py-2 rounded-lg transition-colors cursor-pointer">
+              Вийти
+            </button>
+          </div>
+        }
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content Block -->
+  <main class="flex-grow flex flex-col justify-start">
+    <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+
+  <!-- Footer Block -->
+  <footer class="bg-white border-t border-slate-200 mt-auto">
+    <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+        <div class="flex items-center gap-2">
+          <div class="w-6 h-6 bg-slate-300 rounded flex items-center justify-center text-white font-bold text-xs">
+            OLX
+          </div>
+          <p class="text-sm text-slate-500">© 2026 ТОВ ОЛХ. Всі права захищені.</p>
+        </div>
+        <div class="flex space-x-6 text-sm text-slate-500">
+          <a href="#" class="hover:text-slate-900 transition-colors">Політика конфіденційності</a>
+          <a href="#" class="hover:text-slate-900 transition-colors">Умови використання</a>
+          <a href="#" class="hover:text-slate-900 transition-colors">Центр підтримки</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>
