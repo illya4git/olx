@@ -9,7 +9,11 @@ services:
       - ./backend:/var/www/html/backend
     ports:
       - "8000:8000"
-    command: php artisan serve --host=0.0.0.0 --port=8000
+    command: >
+      sh -c "php artisan storage:link && 
+             chmod -R 775 storage bootstrap/cache && 
+             chown -R www-data:www-data storage bootstrap/cache 2>/dev/null || true && 
+             php artisan serve --host=0.0.0.0 --port=8000"
     environment:
       - DB_CONNECTION=sqlite
       - DB_DATABASE=/var/www/html/backend/database/database.sqlite

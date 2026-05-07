@@ -11,16 +11,35 @@ class AdvertisementController extends Controller
     // "Здійснити пошук оголошень"[cite: 2]
     public function index(Request $request)
     {
-        $query = Advertisement::where('status', 'published');
+        $query = Advertisement::query();
 
-        if ($request->has('min_price')) {
+        // 1. Keyword Search (searches title, description, and address)
+        if ($request->filled('keyword')) {
+            $keyword = $request->keyword;
+            $query->where(function($q) use ($keyword) {
+                $q->where('title', 'like', '%' . $keyword . '%')
+                    ->orWhere('description', 'like', '%' . $keyword . '%')
+                    ->orWhere('address', 'like', '%' . $keyword . '%');
+            });
+        }
+
+        // 2. Existing Numeric Filters
+        if ($request->filled('min_price')) {
             $query->where('price', '>=', $request->min_price);
         }
-        if ($request->has('min_area')) {
+        if ($request->filled('min_area')) {
             $query->where('area', '>=', $request->min_area);
         }
 
-        return response()->json($query->latest()->get());
+        // 3. Sort by newest first (this applies even if no filters are provided!)
+        $ads = $query->latest()->get();
+
+        return response()->json($ads);
+    }
+
+    public function show(Advertisement $advertisement)
+    {
+        return response()->json($advertisement);
     }
 
     // "створитиОголошення"[cite: 2]
@@ -33,18 +52,36 @@ class AdvertisementController extends Controller
 
         $validated = $request->validate([
             'title' => 'required|string|max:255',
-            'price' => 'required|numeric|min:0',
-            'area' => 'required|numeric|min:0',
+            'price' => 'required|numeric',
+            'area' => 'required|numeric',
             'address' => 'required|string',
+            'description' => 'required|string',
+            'seller_contact' => 'required|string|max:255',
+            // Validate that uploaded items are actual images under 5MB
+            'images' => 'nullable|array',
+            'images.*' => 'image|mimes:jpeg,png,jpg,webp|max:5120'
         ]);
 
-        $ad = $request->user()->advertisements()->create([
-            'title' => $validated['title'],
-            'price' => $validated['price'],
-            'area' => $validated['area'],
-            'address' => $validated['address'],
-            'status' => 'published' // Defaulting to published for this demo
-        ]);
+        if (!isset($validated['status'])) {
+            $validated['status'] = 'published';
+        }
+
+        $validated['seller_id'] = auth()->id() ?? 1;
+
+        // Handle File Uploads
+        $imageUrls = [];
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                // Save to storage/app/public/advertisements
+                $path = $image->store('advertisements', 'public');
+                // Generate the public URL
+                $imageUrls[] = asset('storage/' . $path);
+            }
+        }
+
+        $validated['images'] = $imageUrls;
+
+        $ad = Advertisement::create($validated);
 
         // "перевіритиЗбіг"[cite: 2] - Trigger the system actor
         $notificationSystem->checkMatch($ad);

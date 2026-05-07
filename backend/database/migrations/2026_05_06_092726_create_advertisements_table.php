@@ -16,6 +16,9 @@ return new class extends Migration
             $table->float('area');
             $table->string('address');
             $table->enum('status', ['draft', 'published', 'archived'])->default('published');
+            $table->text('description')->nullable();
+            $table->string('seller_contact')->nullable();
+            $table->json('images')->nullable();
             $table->timestamps();
         });
     }

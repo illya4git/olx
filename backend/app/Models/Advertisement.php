@@ -6,7 +6,21 @@ use Illuminate\Database\Eloquent\Model;
 
 class Advertisement extends Model
 {
-    protected $fillable = ['seller_id', 'title', 'price', 'area', 'address', 'status'];
+    protected $fillable = [
+        'seller_id',
+        'title',
+        'price',
+        'area',
+        'address',
+        'status',
+        'description',
+        'seller_contact',
+        'images'
+    ];
+
+    protected $casts = [
+        'images' => 'array',
+    ];
 
     public function seller()
     {

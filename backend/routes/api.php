@@ -10,6 +10,7 @@ use App\Http\Controllers\NotificationController;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/advertisements', [AdvertisementController::class, 'index']); // Здійснити пошук оголошень
+Route::get('/advertisements/{advertisement}', [AdvertisementController::class, 'show']);
 
 // Protected Routes
 Route::middleware('auth:sanctum')->group(function () {

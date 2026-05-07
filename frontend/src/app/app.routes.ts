@@ -8,6 +8,7 @@ import { SubscriptionComponent } from './components/subscription/subscription';
 import { inject } from '@angular/core';
 import { AuthService } from './services/auth';
 import { Router } from '@angular/router';
+import {AdDetailsComponent} from './components/ad-details/ad-details';
 
 // Simple Route Guard for Auth
 const authGuard = () => {
@@ -20,6 +21,7 @@ export const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'ads', component: AdListComponent },
+  { path: 'ad/:id', component: AdDetailsComponent },
 
   // Seller Only Route
   { path: 'ads/create', component: AdCreateComponent, canActivate: [authGuard] },
